@@ -1,0 +1,1389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LIC Premium Due · Jagruti Jayesh Suthar</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #f5f5f0;
+        color: #1a1a1a;
+        padding: 0;
+        min-height: 100vh;
+      }
+      .header {
+        background: #fff;
+        border-bottom: 1px solid #e8e8e4;
+        padding: 16px 16px 12px;
+      }
+      .agent-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: #777;
+        background: #f5f5f0;
+        border: 1px solid #e0e0db;
+        border-radius: 20px;
+        padding: 3px 10px;
+        margin-bottom: 8px;
+      }
+      .header h1 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+      .header p {
+        font-size: 12px;
+        color: #888;
+        margin-top: 2px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        padding: 12px 16px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e4;
+      }
+      .stat {
+        background: #f9f9f6;
+        border-radius: 10px;
+        padding: 10px 12px;
+      }
+      .stat-lbl {
+        font-size: 10px;
+        color: #999;
+        margin-bottom: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .stat-val {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1a1a1a;
+      }
+      .stat-sub {
+        font-size: 10px;
+        color: #aaa;
+        margin-top: 1px;
+      }
+
+      .controls {
+        padding: 10px 16px;
+        background: #fff;
+        border-bottom: 1px solid #e8e8e4;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: center;
+      }
+      .filter-btn {
+        padding: 5px 12px;
+        font-size: 12px;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        background: #fff;
+        cursor: pointer;
+        color: #555;
+        transition: all 0.15s;
+      }
+      .filter-btn.active {
+        background: #128c7e;
+        color: #fff;
+        border-color: #128c7e;
+        font-weight: 500;
+      }
+      .search-wrap {
+        flex: 1;
+        min-width: 130px;
+        position: relative;
+      }
+      .search-wrap input {
+        width: 100%;
+        padding: 6px 10px 6px 30px;
+        font-size: 13px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        background: #f9f9f6;
+        color: #1a1a1a;
+        outline: none;
+      }
+      .search-wrap input:focus {
+        border-color: #128c7e;
+      }
+      .search-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 13px;
+        color: #aaa;
+      }
+
+      .count-lbl {
+        font-size: 12px;
+        color: #888;
+        padding: 8px 16px 4px;
+      }
+
+      .list {
+        padding: 0 12px 16px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #ececea;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 8px;
+        transition: border 0.15s;
+      }
+      .card:hover {
+        border-color: #128c7e40;
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      .c-name {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        line-height: 1.3;
+        flex: 1;
+      }
+      .c-no {
+        font-size: 11px;
+        color: #aaa;
+        margin-top: 2px;
+      }
+      .badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        font-weight: 500;
+      }
+      .badge-overdue {
+        background: #fff0ee;
+        color: #c0392b;
+        border: 1px solid #f5b7b1;
+      }
+      .badge-current {
+        background: #e8f8f5;
+        color: #117a65;
+        border: 1px solid #a9dfbf;
+      }
+      .badge-future {
+        background: #f8f9fa;
+        color: #888;
+        border: 1px solid #e0e0db;
+      }
+
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 12px;
+        margin-bottom: 10px;
+      }
+      .f-lbl {
+        font-size: 10px;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .f-val {
+        font-size: 12px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-top: 1px;
+      }
+
+      .card-footer {
+        border-top: 1px solid #f0f0ec;
+        padding-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .total-block {
+        flex: 1;
+      }
+      .total-lbl {
+        font-size: 10px;
+        color: #aaa;
+      }
+      .total-val {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+
+      .wa-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 9px 16px;
+        border-radius: 25px;
+        background: #25d366;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.15s;
+        flex-shrink: 0;
+      }
+      .wa-btn:hover {
+        opacity: 0.87;
+      }
+      .wa-btn svg {
+        width: 16px;
+        height: 16px;
+        fill: #fff;
+        flex-shrink: 0;
+      }
+
+      .empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #aaa;
+        font-size: 14px;
+      }
+      .empty-icon {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <div class="agent-tag">🛡️ LIC01642843 · Branch 843</div>
+      <h1>Premium Due List</h1>
+      <p>Jagruti Jayesh Suthar · June 2026</p>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="controls">
+      <button class="filter-btn active" onclick="setFilter('all', this)">
+        All
+      </button>
+      <button class="filter-btn" onclick="setFilter('current', this)">
+        This month
+      </button>
+      <button class="filter-btn" onclick="setFilter('overdue', this)">
+        Overdue
+      </button>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          placeholder="Search name / policy…"
+          oninput="doSearch(this.value)"
+        />
+      </div>
+    </div>
+
+    <div class="count-lbl" id="count-lbl"></div>
+    <div class="list" id="list"></div>
+
+    <script>
+      const DATA = [
+        {
+          no: "919400627",
+          name: "Sovanji Laxmanji Thakor",
+          doc: "25/03/2021",
+          plan: "915/21",
+          mod: "Qly",
+          fup: "12/2025",
+          inst: 1751,
+          due: 3,
+          tot: 5253,
+          flg: "",
+        },
+        {
+          no: "919399269",
+          name: "Thakur Mohit Jaykrishna",
+          doc: "11/02/2021",
+          plan: "915/21",
+          mod: "Qly",
+          fup: "02/2026",
+          inst: 1379,
+          due: 2,
+          tot: 2758,
+          flg: "",
+        },
+        {
+          no: "919399270",
+          name: "Thakur Nishita Sitendra",
+          doc: "11/02/2021",
+          plan: "934/24",
+          mod: "Qly",
+          fup: "02/2026",
+          inst: 1175,
+          due: 2,
+          tot: 2350,
+          flg: "",
+        },
+        {
+          no: "919399271",
+          name: "Thakur Dishita Upendrabhai",
+          doc: "11/02/2021",
+          plan: "934/21",
+          mod: "Qly",
+          fup: "02/2026",
+          inst: 1399,
+          due: 2,
+          tot: 2798,
+          flg: "",
+        },
+        {
+          no: "836534976",
+          name: "Hardikla Vinodbhai Ladhabhai Jilka",
+          doc: "12/02/2008",
+          plan: "165/35",
+          mod: "Qly",
+          fup: "02/2026",
+          inst: 900,
+          due: 2,
+          tot: 1800,
+          flg: "",
+        },
+        {
+          no: "933429342",
+          name: "Krunal-La Girishbhai-LP Dabhi",
+          doc: "14/08/2023",
+          plan: "945/94",
+          mod: "Mly",
+          fup: "02/2026",
+          inst: 1665,
+          due: 5,
+          tot: 8325,
+          flg: "ST",
+        },
+        {
+          no: "849967613",
+          name: "Bagare Rubiben Nirmalbhai",
+          doc: "24/03/2018",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "02/2026",
+          inst: 1019,
+          due: 5,
+          tot: 5095,
+          flg: "",
+        },
+        {
+          no: "849971216",
+          name: "Suthar Arvindbhai Jayshankarbhai",
+          doc: "05/09/2018",
+          plan: "843/20",
+          mod: "Qly",
+          fup: "03/2026",
+          inst: 838,
+          due: 2,
+          tot: 1676,
+          flg: "",
+        },
+        {
+          no: "919396005",
+          name: "Ridhiben Subhashbhai Suthar",
+          doc: "07/09/2020",
+          plan: "915/21",
+          mod: "Qly",
+          fup: "03/2026",
+          inst: 1384,
+          due: 2,
+          tot: 2768,
+          flg: "",
+        },
+        {
+          no: "919400628",
+          name: "Jagruti Sovanbhai Thakor",
+          doc: "25/03/2021",
+          plan: "915/21",
+          mod: "Qly",
+          fup: "03/2026",
+          inst: 1395,
+          due: 2,
+          tot: 2790,
+          flg: "",
+        },
+        {
+          no: "933426485",
+          name: "Mohit Jaykrishna Thakur",
+          doc: "27/01/2023",
+          plan: "945/78",
+          mod: "Mly",
+          fup: "04/2026",
+          inst: 1708,
+          due: 3,
+          tot: 5124,
+          flg: "",
+        },
+        {
+          no: "837662964",
+          name: "Jayrambhai Govabhai Desai",
+          doc: "02/02/2012",
+          plan: "165/20",
+          mod: "Qly",
+          fup: "05/2026",
+          inst: 1531,
+          due: 1,
+          tot: 1531,
+          flg: "",
+        },
+        {
+          no: "839328359",
+          name: "Jayrambhai Govabhai Desai",
+          doc: "10/08/2015",
+          plan: "815/21",
+          mod: "Qly",
+          fup: "05/2026",
+          inst: 3125,
+          due: 1,
+          tot: 3125,
+          flg: "",
+        },
+        {
+          no: "837665154",
+          name: "Jaydip Mukeshbhai Soni",
+          doc: "17/03/2012",
+          plan: "165/20",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 500,
+          due: 2,
+          tot: 1000,
+          flg: "",
+        },
+        {
+          no: "839256859",
+          name: "Sanjaybhai Dahyabhai Patel",
+          doc: "20/11/2014",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 1666,
+          due: 2,
+          tot: 3332,
+          flg: "",
+        },
+        {
+          no: "933424438",
+          name: "Prem Manohar Dole",
+          doc: "22/08/2022",
+          plan: "945/83",
+          mod: "Qly",
+          fup: "05/2026",
+          inst: 1997,
+          due: 1,
+          tot: 1997,
+          flg: "",
+        },
+        {
+          no: "937740929",
+          name: "Saralabai Gopal Nimbhore",
+          doc: "23/04/2026",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 2500,
+          due: 2,
+          tot: 5000,
+          flg: "FY",
+        },
+        {
+          no: "838582914",
+          name: "Urvashi Vijaybhai Panchal",
+          doc: "25/04/2013",
+          plan: "165/20",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 500,
+          due: 2,
+          tot: 1000,
+          flg: "",
+        },
+        {
+          no: "849967727",
+          name: "Shivam(LA) Munshibhai(LP) Kori",
+          doc: "27/03/2018",
+          plan: "814/20",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 637,
+          due: 2,
+          tot: 1274,
+          flg: "",
+        },
+        {
+          no: "937737501",
+          name: "Jaykrishna R Thakur",
+          doc: "27/06/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 2500,
+          due: 2,
+          tot: 5000,
+          flg: "FY",
+        },
+        {
+          no: "937738959",
+          name: "Kathawala TM",
+          doc: "27/11/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 2500,
+          due: 2,
+          tot: 5000,
+          flg: "FY",
+        },
+        {
+          no: "838570514",
+          name: "Ritakumari Balchand Mina",
+          doc: "28/06/2012",
+          plan: "165/20",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 800,
+          due: 2,
+          tot: 1600,
+          flg: "",
+        },
+        {
+          no: "839557094",
+          name: "Jaykrishna Ramashish Thakur",
+          doc: "28/11/2016",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 527,
+          due: 2,
+          tot: 1054,
+          flg: "",
+        },
+        {
+          no: "839557096",
+          name: "Prabin Jaykrishna Thakur",
+          doc: "28/11/2016",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 522,
+          due: 2,
+          tot: 1044,
+          flg: "",
+        },
+        {
+          no: "839563691",
+          name: "Jalpaben Jinendra Shah",
+          doc: "28/08/2017",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 1847,
+          due: 2,
+          tot: 3694,
+          flg: "",
+        },
+        {
+          no: "919401668",
+          name: "Rathod Vidhyaram Mevaram",
+          doc: "28/04/2021",
+          plan: "915/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 1002,
+          due: 2,
+          tot: 2004,
+          flg: "",
+        },
+        {
+          no: "919401669",
+          name: "Rathod Rekhaben Vidhyaram",
+          doc: "28/04/2021",
+          plan: "915/21",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 1013,
+          due: 2,
+          tot: 2026,
+          flg: "",
+        },
+        {
+          no: "933429544",
+          name: "Dityaa-LA Ravibhai-LP Suthar",
+          doc: "28/08/2023",
+          plan: "934/25",
+          mod: "Qly",
+          fup: "05/2026",
+          inst: 1680,
+          due: 1,
+          tot: 1680,
+          flg: "ST",
+        },
+        {
+          no: "933430514",
+          name: "Subhashbhai Dalsukhbhai Suthar",
+          doc: "28/11/2023",
+          plan: "936/21",
+          mod: "Hly",
+          fup: "05/2026",
+          inst: 6540,
+          due: 1,
+          tot: 6540,
+          flg: "ST",
+        },
+        {
+          no: "937734872",
+          name: "Nayan Manojbhai Dole",
+          doc: "28/09/2024",
+          plan: "945/78",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 1030,
+          due: 2,
+          tot: 2060,
+          flg: "ST",
+        },
+        {
+          no: "937734877",
+          name: "Jagruti Jayeshbhai Suthar",
+          doc: "28/09/2024",
+          plan: "945/51",
+          mod: "Mly",
+          fup: "05/2026",
+          inst: 989,
+          due: 2,
+          tot: 1978,
+          flg: "ST",
+        },
+        {
+          no: "839559737",
+          name: "Sanjaybhai Dahyabhai Patel",
+          doc: "01/03/2017",
+          plan: "815/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 4187,
+          due: 1,
+          tot: 4187,
+          flg: "",
+        },
+        {
+          no: "919399771",
+          name: "Kartik Gopalbhai Vihol",
+          doc: "01/03/2021",
+          plan: "943/20",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 912,
+          due: 1,
+          tot: 912,
+          flg: "",
+        },
+        {
+          no: "912383819",
+          name: "Keyur Subhashbhai Suthar",
+          doc: "03/12/2019",
+          plan: "815/21",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 2111,
+          due: 1,
+          tot: 2111,
+          flg: "",
+        },
+        {
+          no: "839563322",
+          name: "Jignesh Dahyabhai Patel",
+          doc: "04/08/2017",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 560,
+          due: 1,
+          tot: 560,
+          flg: "",
+        },
+        {
+          no: "937734304",
+          name: "S M Dole",
+          doc: "04/09/2024",
+          plan: "873/25",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "937734305",
+          name: "Abhishek R Mishra",
+          doc: "04/09/2024",
+          plan: "873/25",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "933428608",
+          name: "V S Pawar",
+          doc: "05/06/2023",
+          plan: "852/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 5000,
+          due: 1,
+          tot: 5000,
+          flg: "",
+        },
+        {
+          no: "937735976",
+          name: "Vipulkumar A Ra",
+          doc: "05/02/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "937735978",
+          name: "Hiren D Parekh",
+          doc: "05/02/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "937737798",
+          name: "Gopal C Nimbhore",
+          doc: "05/08/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "FY",
+        },
+        {
+          no: "937737799",
+          name: "Saralabai G Nimbhore",
+          doc: "05/08/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "FY",
+        },
+        {
+          no: "937737835",
+          name: "M D Kathawala",
+          doc: "05/08/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "FY",
+        },
+        {
+          no: "837661904",
+          name: "Shubham Vijaybhai Panchal",
+          doc: "06/01/2012",
+          plan: "165/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 510,
+          due: 1,
+          tot: 510,
+          flg: "",
+        },
+        {
+          no: "933431277",
+          name: "Suraj B Pawar",
+          doc: "06/02/2024",
+          plan: "873/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "933431278",
+          name: "Varsha Suraj Pawar",
+          doc: "06/02/2024",
+          plan: "873/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "937738740",
+          name: "Muffaddal I Rajkotwala",
+          doc: "06/11/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "FY",
+        },
+        {
+          no: "919396006",
+          name: "Devla Rajubhai Parmarlp",
+          doc: "07/09/2020",
+          plan: "934/21",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1399,
+          due: 1,
+          tot: 1399,
+          flg: "",
+        },
+        {
+          no: "919396007",
+          name: "Yuvrajla Rajubhai Parmarlp",
+          doc: "07/09/2020",
+          plan: "934/20",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1497,
+          due: 1,
+          tot: 1497,
+          flg: "",
+        },
+        {
+          no: "919396010",
+          name: "Takshvila Bhavikkumar Suthar",
+          doc: "07/09/2020",
+          plan: "934/23",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1240,
+          due: 1,
+          tot: 1240,
+          flg: "",
+        },
+        {
+          no: "849967121",
+          name: "Mukesh Savaji Marwadi (Sargara)",
+          doc: "09/03/2018",
+          plan: "815/21",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 2068,
+          due: 1,
+          tot: 2068,
+          flg: "",
+        },
+        {
+          no: "849967122",
+          name: "Vijay Savaji Marwadi",
+          doc: "09/03/2018",
+          plan: "815/21",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 2085,
+          due: 1,
+          tot: 2085,
+          flg: "",
+        },
+        {
+          no: "838598588",
+          name: "Vijaybhai Chandulal Panchal",
+          doc: "10/06/2014",
+          plan: "815/21",
+          mod: "Yly",
+          fup: "06/2026",
+          inst: 6592,
+          due: 1,
+          tot: 6592,
+          flg: "",
+        },
+        {
+          no: "912381574",
+          name: "Bhavya-LA Mukesh-LP Sargara",
+          doc: "10/10/2019",
+          plan: "832/25",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 983,
+          due: 1,
+          tot: 983,
+          flg: "",
+        },
+        {
+          no: "937737576",
+          name: "Gaurangbhai R Solanki",
+          doc: "10/07/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "FY",
+        },
+        {
+          no: "837640227",
+          name: "Kiritkumar Mansukhlal Panchal",
+          doc: "15/06/2010",
+          plan: "165/20",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 766,
+          due: 1,
+          tot: 766,
+          flg: "",
+        },
+        {
+          no: "933429756",
+          name: "Pooja Bharatbhai Gholap",
+          doc: "15/09/2023",
+          plan: "915/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 1803,
+          due: 1,
+          tot: 1803,
+          flg: "ST",
+        },
+        {
+          no: "933429757",
+          name: "Shah AG",
+          doc: "15/09/2023",
+          plan: "852/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 10000,
+          due: 1,
+          tot: 10000,
+          flg: "ST",
+        },
+        {
+          no: "933429758",
+          name: "Pavar PN",
+          doc: "15/09/2023",
+          plan: "852/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 5000,
+          due: 1,
+          tot: 5000,
+          flg: "ST",
+        },
+        {
+          no: "933429759",
+          name: "Pawar VN",
+          doc: "15/09/2023",
+          plan: "852/20",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 5000,
+          due: 1,
+          tot: 5000,
+          flg: "ST",
+        },
+        {
+          no: "919399448",
+          name: "Patel Sadhanaben Kanaiyalal",
+          doc: "16/02/2021",
+          plan: "945/63",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 6671,
+          due: 1,
+          tot: 6671,
+          flg: "",
+        },
+        {
+          no: "839558715",
+          name: "Parul Narayanbhai Pawar",
+          doc: "17/02/2017",
+          plan: "815/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 3392,
+          due: 1,
+          tot: 3392,
+          flg: "",
+        },
+        {
+          no: "849967336",
+          name: "Aarvi(LA) Shubham(LP) Panchal",
+          doc: "17/03/2018",
+          plan: "834/25",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 732,
+          due: 1,
+          tot: 732,
+          flg: "",
+        },
+        {
+          no: "838580670",
+          name: "Ashokbhai Pashabhai Prajapati",
+          doc: "18/03/2013",
+          plan: "89/20",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1677,
+          due: 1,
+          tot: 1677,
+          flg: "",
+        },
+        {
+          no: "838592287",
+          name: "Dipeshbhai Rameshbhai Prajapati",
+          doc: "19/12/2013",
+          plan: "149/64",
+          mod: "Hly",
+          fup: "06/2026",
+          inst: 5688,
+          due: 1,
+          tot: 5688,
+          flg: "",
+        },
+        {
+          no: "849967353",
+          name: "Prakash Munshibhai Kori",
+          doc: "19/03/2018",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 697,
+          due: 1,
+          tot: 697,
+          flg: "",
+        },
+        {
+          no: "912379772",
+          name: "Savaji Malaji Marvadi",
+          doc: "20/06/2019",
+          plan: "815/21",
+          mod: "Hly",
+          fup: "06/2026",
+          inst: 5128,
+          due: 1,
+          tot: 5128,
+          flg: "",
+        },
+        {
+          no: "912379066",
+          name: "Jignasa Pratapbhai Vaghela",
+          doc: "22/04/2019",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 577,
+          due: 1,
+          tot: 577,
+          flg: "",
+        },
+        {
+          no: "919404558",
+          name: "Sirsikar Meena Pradip",
+          doc: "22/10/2021",
+          plan: "915/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 568,
+          due: 1,
+          tot: 568,
+          flg: "",
+        },
+        {
+          no: "839555274",
+          name: "Lawrence Navinchandra Macwan",
+          doc: "23/08/2016",
+          plan: "815/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 1131,
+          due: 1,
+          tot: 1131,
+          flg: "",
+        },
+        {
+          no: "849973176",
+          name: "Rashmi-LA Dharmendra-LP Rathod",
+          doc: "24/12/2018",
+          plan: "834/20",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 4342,
+          due: 1,
+          tot: 4342,
+          flg: "",
+        },
+        {
+          no: "919400499",
+          name: "Viha-LA Vijay.Savaji.Marwadi-LP",
+          doc: "24/03/2021",
+          plan: "934/25",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 3292,
+          due: 1,
+          tot: 3292,
+          flg: "",
+        },
+        {
+          no: "919400626",
+          name: "Bhavyaraj Rahulbhai Thakor",
+          doc: "25/03/2021",
+          plan: "934/23",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1860,
+          due: 1,
+          tot: 1860,
+          flg: "",
+        },
+        {
+          no: "836537203",
+          name: "Pushpaben Baldevbhai Parmar",
+          doc: "26/03/2008",
+          plan: "165/30",
+          mod: "Qly",
+          fup: "06/2026",
+          inst: 1225,
+          due: 1,
+          tot: 1225,
+          flg: "",
+        },
+        {
+          no: "919403670",
+          name: "Singh Chandan Kumar Ram Ashish",
+          doc: "26/08/2021",
+          plan: "915/21",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 933,
+          due: 1,
+          tot: 933,
+          flg: "",
+        },
+        {
+          no: "937737500",
+          name: "Ravibhai M Suthar",
+          doc: "27/06/2025",
+          plan: "873/15",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 2500,
+          due: 1,
+          tot: 2500,
+          flg: "ST",
+        },
+        {
+          no: "838596232",
+          name: "Bhagvatiben Saileshbhai Prajapati",
+          doc: "28/12/2013",
+          plan: "165/20",
+          mod: "Hly",
+          fup: "06/2026",
+          inst: 3032,
+          due: 1,
+          tot: 3032,
+          flg: "",
+        },
+        {
+          no: "933427899",
+          name: "Jagruti Jayeshbhai Suthar",
+          doc: "28/03/2023",
+          plan: "945/53",
+          mod: "Mly",
+          fup: "06/2026",
+          inst: 1216,
+          due: 1,
+          tot: 1216,
+          flg: "",
+        },
+      ];
+
+      const CURR = "06/2026";
+      const MOD = {
+        Mly: "Monthly",
+        Qly: "Quarterly",
+        Hly: "Half-yearly",
+        Yly: "Yearly",
+      };
+      const PT = {
+        FY: "1st year premium",
+        ST: "2nd/3rd year premium",
+        "": " ",
+      };
+
+      function fmt(n) {
+        return "₹" + n.toLocaleString("en-IN");
+      }
+      function isOD(fup) {
+        const [m, y] = fup.split("/").map(Number);
+        return y < 2026 || (y === 2026 && m < 6);
+      }
+      function isCurr(fup) {
+        return fup === CURR;
+      }
+
+      let filter = "all",
+        search = "";
+      function setFilter(f, btn) {
+        filter = f;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        render();
+      }
+      function doSearch(v) {
+        search = v.toLowerCase();
+        render();
+      }
+
+      function getList() {
+        return DATA.filter((p) => {
+          if (filter === "current" && !isCurr(p.fup)) return false;
+          if (filter === "overdue" && !isOD(p.fup)) return false;
+          if (
+            search &&
+            !p.name.toLowerCase().includes(search) &&
+            !p.no.includes(search)
+          )
+            return false;
+          return true;
+        });
+      }
+
+      function waMsg(p) {
+        const modStr = MOD[p.mod] || p.mod;
+        const ptStr = p.flg ? PT[p.flg] || p.flg : "";
+        const ptLine =
+          ptStr && ptStr.trim() ? `\n📌 Premium type: ${ptStr}` : "";
+        return encodeURIComponent(
+          `Dear ${p.name},
+
+This is a friendly reminder from your LIC advisor Jagruti Jayesh Suthar.
+
+Your LIC premium payment details are as follows:
+
+📋 Policy No: ${p.no}
+📄 Plan / Term: ${p.plan}
+📅 DOC: ${p.doc}
+📅 Due month: ${p.fup}
+💰 Instalment premium: ${fmt(p.inst)} (${modStr})
+🔢 No. of instalments due: ${p.due}
+💵 Total amount due: ${fmt(p.tot)}${ptLine}
+
+Kindly ensure timely payment to keep your policy active and all benefits intact.
+
+Thank you for trusting LIC!
+
+Jagruti Jayesh Suthar
+LIC Agent · LIC01642843 · Branch 843`,
+        );
+      }
+
+      function renderStats() {
+        const total = DATA.length;
+        const overdue = DATA.filter((p) => isOD(p.fup)).length;
+        const curr = DATA.filter((p) => isCurr(p.fup)).length;
+        const totalPrem = DATA.reduce((a, p) => a + p.tot, 0);
+        document.getElementById("stats").innerHTML = `
+    <div class="stat"><div class="stat-lbl">Policies</div><div class="stat-val">${total}</div><div class="stat-sub">Total</div></div>
+    <div class="stat"><div class="stat-lbl">This month</div><div class="stat-val">${curr}</div><div class="stat-sub">Jun 2026</div></div>
+    <div class="stat"><div class="stat-lbl">Overdue</div><div class="stat-val" style="color:#C0392B">${overdue}</div><div class="stat-sub">&nbsp;</div></div>
+  `;
+      }
+
+      function render() {
+        const list = getList();
+        document.getElementById("count-lbl").textContent =
+          `Showing ${list.length} of ${DATA.length} policies`;
+        if (!list.length) {
+          document.getElementById("list").innerHTML =
+            '<div class="empty"><div class="empty-icon">🔍</div>No policies match your search.</div>';
+          return;
+        }
+        document.getElementById("list").innerHTML = list
+          .map((p) => {
+            const od = isOD(p.fup),
+              cu = isCurr(p.fup);
+            const badge = od
+              ? `<span class="badge badge-overdue">Overdue · ${p.fup}</span>`
+              : cu
+                ? `<span class="badge badge-current">Due Jun 2026</span>`
+                : `<span class="badge badge-future">FUP ${p.fup}</span>`;
+            const ptLine =
+              p.flg && PT[p.flg] && PT[p.flg].trim()
+                ? `<div class="f-item"><div class="f-lbl">Premium type</div><div class="f-val">${PT[p.flg]}</div></div>`
+                : "";
+            return `<div class="card">
+      <div class="card-top">
+        <div><div class="c-name">${p.name}</div><div class="c-no">Policy ${p.no}</div></div>
+        ${badge}
+      </div>
+      <div class="fields">
+        <div><div class="f-lbl">Plan / Term</div><div class="f-val">${p.plan}</div></div>
+        <div><div class="f-lbl">DOC</div><div class="f-val">${p.doc}</div></div>
+        <div><div class="f-lbl">Mode</div><div class="f-val">${MOD[p.mod] || p.mod}</div></div>
+        <div><div class="f-lbl">Instalment premium</div><div class="f-val">${fmt(p.inst)}</div></div>
+        <div><div class="f-lbl">Instalments due</div><div class="f-val">${p.due}</div></div>
+        ${ptLine}
+      </div>
+      <div class="card-footer">
+        <div class="total-block"><div class="total-lbl">Total due</div><div class="total-val">${fmt(p.tot)}</div></div>
+        <a class="wa-btn" href="https://wa.me/?text=${waMsg(p)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.855L.057 23.927a.5.5 0 0 0 .609.609l6.101-1.47A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 0 1-4.983-1.356l-.357-.212-3.696.891.908-3.617-.233-.372A9.818 9.818 0 1 1 12 21.818z"/></svg>
+          Send on WhatsApp
+        </a>
+      </div>
+    </div>`;
+          })
+          .join("");
+      }
+
+      renderStats();
+      render();
+    </script>
+  </body>
+</html>
